@@ -55,19 +55,21 @@ export default {
     }
   },
 
-  data() {
-    return {
-      internalValue: this.value
-    };
-  },
   watch: {
-    internalValue(v: [String, Number]) {
+    internalValue(v: String | Number) {
       this.$emit("input", v);
     }
   },
 
-  computed() {
-    this.internalValue = this.value;
+  computed: {
+    // this.internalValue = this.value;
+    internalValue(): String | Number {
+      if (this.value) {
+        return this.value;
+      } else {
+        return "0";
+      }
+    }
   }
 };
 </script>
