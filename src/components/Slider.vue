@@ -1,36 +1,42 @@
 <template>
-  <vue-slider-component
-    :height="8"
-    :dotHeight="16"
-    :dotWidth="24"
-    :tooltip="tooltip"
-    :tooltip-dir="'bottom'"
-    :min="min"
-    :max="max"
-    :interval="interval"
-    :value="value"
-    :prefix="prefix"
-    :suffix="suffix"
-    :formatter="prefix + '{value}' + suffix"
-    :data="data">
-  </vue-slider-component>
+  <div class="range-slider-wrapper">
+    <range-slider
+      :class="{ 'range-slider--w-tooltip': tooltip === true }"
+      :min="min"
+      :max="max"
+      :step="step"
+      :prefix="prefix"
+      :suffix="suffix"
+      :tooltip="tooltip"
+      :disabled="disabled"
+      v-model="internalValue"
+      >
+    </range-slider>
+    <div
+      class="range-slider-tooltip"
+      :class="{ disabled: disabled === true }"
+      v-if="tooltip === true"
+      :style="{ left: value + '%' }">
+      {{ prefix }}{{ value }}{{ suffix }}
+    </div>
+  </div>
 </template>
 
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import VueSliderComponent from "vue-slider-component";
+import RangeSlider from "vue-range-slider";
+import "vue-range-slider/dist/vue-range-slider.css";
+
 export default {
   name: "Slider",
-  extends: VueSliderComponent,
+  extends: RangeSlider,
+
   components: {
-    VueSliderComponent
+    RangeSlider
   },
+
   props: {
-    value: {
-      type: [String, Number],
-      defualt: 0
-    },
     prefix: {
       type: String,
       default: ""
@@ -39,95 +45,132 @@ export default {
       type: String,
       default: ""
     },
-    data: {
-      type: String,
+    tooltip: {
+      type: Boolean,
+      default: true
+    },
+    value: {
+      type: [String, Number],
       default: null
     }
+  },
+
+  data() {
+    return {
+      internalValue: this.value
+    };
+  },
+  watch: {
+    internalValue(v: [String, Number]) {
+      this.$emit("input", v);
+    }
+  },
+
+  computed() {
+    this.internalValue = this.value;
   }
 };
 </script>
 
 <style lang="less">
 @import "./../styles/Imports";
-.vue-slider-component {
-  padding: 4px 0px 28px !important;
-  width: 80% !important;
-  display: inline-block;
+.range-slider-wrapper {
+  position: relative;
+}
 
-  .vue-slider {
-    background-color: @light-3;
+.range-slider {
+  padding: 0;
+  height: 16px;
+}
+
+.range-slider--w-tooltip {
+  margin-bottom: 24px;
+}
+
+.range-slider {
+  width: 100% !important;
+
+  &.disabled {
+    opacity: 0.4 !important;
+  }
+}
+
+.range-slider-rail,
+.range-slider-fill {
+  height: 8px !important;
+  .radius() !important;
+}
+
+.range-slider-rail {
+  background-color: @light-3 !important;
+}
+
+.range-slider-fill {
+  background-color: @teal !important;
+}
+
+.range-slider-knob {
+  background-color: @dark-2;
+  box-shadow: none;
+  .radius(3);
+  position: relative;
+  width: calc(~"3 * " @spacing);
+  height: calc(~"2 * " @spacing);
+  border: 0;
+
+  &:before,
+  &:after {
+    border: none;
+    font-family: "icomoon";
+    font-weight: 900;
+    position: absolute;
+    top: 0px;
+    color: @light-3;
+    font-size: 11px;
+    line-height: 15px;
+    content: "\e996";
+    display: inline-block;
   }
 
-  .vue-slider-process {
-    background-color: @teal;
+  &:before {
+    transform: rotate(90deg);
+    left: 2px;
   }
 
-  .vue-slider-dot {
-    .vue-slider-dot-handle {
-      background-color: @dark-2;
-      box-shadow: none;
-      .radius(3);
-      position: relative;
-
-      &:before,
-      &:after {
-        border: none;
-        font-family: "icomoon";
-        font-weight: 900;
-        position: absolute;
-        top: 0px;
-        color: @light-3;
-        font-size: 11px;
-        line-height: 15px;
-        content: "\e996";
-        display: inline-block;
-      }
-
-      &:before {
-        transform: rotate(90deg);
-        left: 2px;
-      }
-
-      &:after {
-        transform: rotate(-90deg);
-        right: 2px;
-      }
-    }
+  &:after {
+    transform: rotate(-90deg);
+    right: 2px;
   }
+}
 
-  .vue-slider-tooltip {
-    background-color: transparent;
-    border: 0;
-    color: @day-title;
-    padding: 0;
+.range-slider-tooltip {
+  position: absolute;
+  bottom: -10px;
+  transform: translate(-50%, -50%);
+  color: @day-title;
 
-    &:before {
-      border: 0 !important;
-    }
+  &.disabled {
+    opacity: 0.4 !important;
   }
 }
 
 .night,
 .night-theme {
-  .vue-slider-component {
-    .vue-slider {
-      background-color: @dark-4;
-    }
+  .range-slider-rail {
+    background-color: @dark-4 !important;
+  }
 
-    .vue-slider-dot {
-      .vue-slider-dot-handle {
-        background-color: @light-1;
+  .range-slider-knob {
+    background-color: @light-1;
 
-        &:before,
-        &:after {
-          color: @dark-5;
-        }
-      }
+    &:before,
+    &:after {
+      color: @dark-5;
     }
+  }
 
-    .vue-slider-tooltip {
-      color: @night-title;
-    }
+  .range-slider-tooltip {
+    color: @night-title;
   }
 }
 </style>
