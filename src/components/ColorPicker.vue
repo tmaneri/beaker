@@ -2,11 +2,15 @@
   <div class="colorpicker-container" ref="colorpicker">
     <input type="text" @focus="showPicker()" :value="value" @input="updateFromInput">
 
-    <div class="colorpicker__preview" :style="{ backgroundColor: value }" @click="showPicker()"></div>
+    <div
+      class="colorpicker__preview"
+      :style="{ backgroundColor: colors.hex }"
+      @click="showPicker()"
+    ></div>
 
     <picker
       class="colorpicker"
-      :value="colors"
+      :value="value"
       v-if="displayPicker"
       :disable-alpha="true"
       :disable-fields="true"
@@ -20,7 +24,6 @@ import { Chrome } from "vue-color";
 
 export default {
   name: "ColorPicker",
-  // props: ["value"],
   extends: Chrome,
 
   data() {
@@ -34,7 +37,7 @@ export default {
   },
 
   mounted() {
-    this.backgroundColor = this.value;
+    this.$emit("input", this.value.hex);
   },
 
   methods: {
