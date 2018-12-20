@@ -11,6 +11,7 @@
       <color-pickers v-if="activeSection === 'color-pickers'"/>
       <dropdowns v-if="activeSection === 'dropdowns'"/>
       <forms v-if="activeSection === 'forms'"/>
+      <galleries v-if="activeSection === 'galleries'"/>
       <icons v-if="activeSection === 'icons'"/>
       <inputs v-if="activeSection === 'inputs'"/>
       <sliders v-if="activeSection === 'sliders'"/>
@@ -32,6 +33,7 @@ import Callouts from "@/demos/Callouts.vue";
 import ColorPickers from "@/demos/ColorPickers.vue";
 import Dropdowns from "@/demos/Dropdowns.vue";
 import Forms from "@/demos/Forms.vue";
+import Galleries from "@/demos/Galleries.vue";
 import Icons from "@/demos/Icons.vue";
 import Inputs from "@/demos/Inputs.vue";
 import Navigations from "@/demos/Navigations.vue";
@@ -51,6 +53,7 @@ import Toggles from "@/demos/Toggles.vue";
     ColorPickers,
     Dropdowns,
     Forms,
+    Galleries,
     Icons,
     Inputs,
     Navigations,

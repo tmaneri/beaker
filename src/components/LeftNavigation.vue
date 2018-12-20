@@ -10,6 +10,7 @@
     <!-- <a class="left-navigation__link" @click="changeSection('colors')">Colors</a> -->
     <!-- <a class="left-navigation__link" @click="changeSection('dropdowns')">Dropdowns</a> -->
     <a class="left-navigation__link" @click="changeSection('forms')">Forms</a>
+    <a class="left-navigation__link" @click="changeSection('galleries')">Galleries</a>
     <a class="left-navigation__link" @click="changeSection('icons')">Icons</a>
     <a class="left-navigation__link" @click="changeSection('inputs')">Inputs</a>
     <!-- <a class="left-navigation__link" @click="changeSection('merch')">Merch</a> -->
