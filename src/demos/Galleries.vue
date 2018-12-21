@@ -24,14 +24,26 @@ import Carousel from "./../components/Carousel.vue";
 })
 export default class Galleries extends Vue {
   slides = [
-    "https://picsum.photos/1120/630",
-    "https://picsum.photos/1120/630?image=243",
-    "https://picsum.photos/1120/630?image=461",
-    "https://picsum.photos/1120/630?image=261",
-    "https://picsum.photos/1120/630?image=61",
-    "https://picsum.photos/1120/630?image=23",
-    "https://picsum.photos/1120/630?image=41",
-    "https://picsum.photos/1120/630?image=21"
+    // "https://picsum.photos/1120/630?image=41",
+    // "https://picsum.photos/1120/630?image=23",
+    // "https://picsum.photos/1120/630?image=61",
+    // "https://picsum.photos/1120/630?image=243",
+    // "https://picsum.photos/1120/630?image=461",
+    // "https://picsum.photos/1120/630",
+    // "https://picsum.photos/1120/630?image=261",
+    // "https://picsum.photos/1120/630?image=21"
+    {
+      src: "https://picsu1m.photos/1120/630?image=23",
+      link: "https://google.com",
+      alt: "Some type of image"
+    },
+    {
+      src: "https://picsum.photos/1120/630",
+      link: "https://streamlabs.com"
+    },
+    {
+      src: "https://picsum.photos/1120/630?image=21"
+    }
   ];
 }
 </script>
@@ -41,6 +53,7 @@ export default class Galleries extends Vue {
 
 .carousel {
   &-section {
+    max-width: 1440px;
     overflow: hidden;
   }
 

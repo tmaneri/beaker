@@ -2,12 +2,21 @@
   <div class="carousel">
     <ul class="carousel__list">
       <li
-        v-for="item in truncatedSlides"
-        :key="`carouselitem${item.id}`"
+        v-for="slide in truncatedSlides"
+        :key="`carouselitem${slide.id}`"
         class="carousel__item"
-        :class="`item-${item.id}`"
       >
-        <img :src="item.src">
+        <a v-if="slide.link" :href="slide.link" target="_blank">
+          <video v-if="videos" muted>
+            <source :src="slide.src">
+          </video>
+          <img v-else :src="slide.src" :alt="slide.alt">
+        </a>
+
+        <video v-if="videos && !slide.link" muted>
+          <source :src="slide.src">
+        </video>
+        <img v-if="!slide.link" :src="slide.src" :alt="slide.alt">
       </li>
     </ul>
   </div>
@@ -25,25 +34,34 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 @Component({})
 export default class Carousel extends Vue {
   @Prop({ required: true })
-  slides!: Array<string>;
+  slides!: (string | { src: string })[];
 
   @Prop({ default: 5000 })
   interval!: number;
 
+  @Prop({ default: false })
+  videos!: boolean;
+
   formattedSlides = this.formatSlides();
-  truncatedSlides = this.formattedSlides.filter((slide, idx) => idx < 4);
+  truncatedSlides = this.formattedSlides.filter(
+    (slide: string | { src: string }, idx: number) => idx < 4
+  );
   intervalState: number = 0;
   remainingTime: number = 0;
   startTime = new Date();
   timerId = window.setInterval(this.next, this.interval);
 
   created() {
+    if (this.slides.length < 2) {
+      throw "There must be at least 2 slides in order for the Carousel component to function.";
+    }
+
     window.onblur = () => {
       this.pauseInterval();
     };
 
     window.onfocus = () => {
-      this.resumeInterval();
+      // this.resumeInterval();
     };
   }
 
@@ -61,10 +79,6 @@ export default class Carousel extends Vue {
     this.intervalState = 1;
   }
 
-  truncateSlides() {
-    return this.formattedSlides.filter((slide, idx) => idx < 4);
-  }
-
   formatSlides() {
     if (this.slides.length === 2) {
       return [...this.slides, ...this.slides].map(this.mapSlides);
@@ -73,6 +87,10 @@ export default class Carousel extends Vue {
     } else {
       return this.slides.map(this.mapSlides);
     }
+  }
+
+  truncateSlides() {
+    return this.formattedSlides.filter((slide: object, idx: number) => idx < 4);
   }
 
   next() {
@@ -115,7 +133,11 @@ export default class Carousel extends Vue {
     this.intervalState = 1;
   }
 
-  mapSlides(slide: string, idx: number) {
+  mapSlides(slide: string | { src: string }, idx: number) {
+    if (typeof slide === "object") {
+      return Object.assign({ id: idx + 1 }, slide);
+    }
+
     return {
       id: idx + 1,
       src: slide
@@ -162,20 +184,39 @@ export default class Carousel extends Vue {
     background-blend-mode: lighten;
     opacity: 0.5;
     overflow: hidden;
-    transition: transform 1s ease-in-out, opacity 0.5s ease-in-out,
-      filter 1s ease-in-out, left 1s ease-in-out;
+    transition: transform 1.25s cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 0.75s ease-in-out, filter 1.25s cubic-bezier(0.4, 0, 0.2, 1),
+      left 1.25s cubic-bezier(0.4, 0, 0.2, 1);
 
     img,
     video {
+      position: relative;
+      display: block;
       width: 100%;
       height: 100%;
+
+      &:before {
+        content: "\e923" " " attr(alt);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: "icomoon", "Roboto";
+        font-size: 16px;
+        font-weight: 500;
+        background-color: @white;
+      }
     }
 
     &:nth-child(1) {
       left: ~"calc(-45% - 32px)";
       filter: grayscale(100%);
       opacity: 0;
-      animation: fade-in-half 0.275s ease-in-out 0.85s forwards;
+      animation: fade-in-half 0.275s ease-in-out 1s forwards;
     }
 
     &:nth-child(2) {
