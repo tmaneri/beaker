@@ -5,7 +5,7 @@
     <div class="section carousel-section">
       <h2>Carousel</h2>
       <div class="carousel-container">
-        <carousel :slides="slides"></carousel>
+        <carousel :slides="slides" :interval="5000" :videos="true"></carousel>
       </div>
     </div>
   </div>
@@ -32,18 +32,33 @@ export default class Galleries extends Vue {
     // "https://picsum.photos/1120/630",
     // "https://picsum.photos/1120/630?image=261",
     // "https://picsum.photos/1120/630?image=21"
+    // {
+    //   src: "https://picsum.photos/1120/630",
+    //   link: "https://streamlabs.com"
+    // },
     {
-      src: "https://picsu1m.photos/1120/630?image=23",
-      link: "https://google.com",
-      alt: "Some type of image"
+      src: "https://www.quirksmode.org/html5/videos/big_buck_bunny.mp4",
+      videoType: "mp4",
+      alt: "Big Buck Bunny"
     },
     {
-      src: "https://picsum.photos/1120/630",
-      link: "https://streamlabs.com"
+      src: "https://www.1quirksmode.org/html5/videos/big_buck_bunny.mp4",
+      videoType: "mp4",
+      alt: "Big Buck Bunny"
     },
     {
-      src: "https://picsum.photos/1120/630?image=21"
+      src: "https://www.quirksmode.org/html5/videos/big_buck_bunny.mp4",
+      videoType: "mp4",
+      alt: "Big Buck Bunny"
     }
+    // {
+    //   src: "https://picsu1m.photos/1120/630?image=23",
+    //   link: "https://google.com",
+    //   alt: "Some type of image"
+    // }
+    // {
+    //   src: "https://picsum.photos/1120/630?image=21"
+    // }
   ];
 }
 </script>

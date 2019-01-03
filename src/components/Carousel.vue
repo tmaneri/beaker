@@ -2,21 +2,32 @@
   <div class="carousel">
     <ul class="carousel__list">
       <li
-        v-for="slide in truncatedSlides"
+        v-for="(slide, idx) in truncatedSlides"
         :key="`carouselitem${slide.id}`"
         class="carousel__item"
+        :class="`item-${slide.id}`"
       >
         <a v-if="slide.link" :href="slide.link" target="_blank">
-          <video v-if="videos" muted>
-            <source :src="slide.src">
+          <video
+            v-if="videos"
+            :ref="idx === 0 ? 'activeSlide' : `prevSlide${idx}`"
+            muted
+            @error.capture="handleError($event, slide)">
+            <source :src="slide.src" :type="`video/${slide.videoType}`">
           </video>
-          <img v-else :src="slide.src" :alt="slide.alt">
+          <p v-if="videos && slide.brokenVideoSrc">We're sorry, it seems there is a problem loading the video - <span>{{ slide.alt }}</span></p>
+          <img v-else :src="slide.src" :alt="slide.alt" :title="slide.alt">
         </a>
 
-        <video v-if="videos && !slide.link" muted>
-          <source :src="slide.src">
+        <video
+          v-if="videos && !slide.link && !slide.brokenVideoSrc"
+          :ref="idx === 0 ? 'activeSlide' : `prevSlide${idx}`"
+          muted
+          @error.capture="handleError($event, slide)">
+          <source :src="slide.src" :type="`video/${slide.videoType}`">
         </video>
-        <img v-if="!slide.link" :src="slide.src" :alt="slide.alt">
+        <p v-if="videos && !slide.link && slide.brokenVideoSrc">We're sorry, it seems there is a problem loading the video - <span>{{ slide.alt }}</span></p>
+        <img v-if="!videos && !slide.link && !slide.brokenVideoSrc" :src="slide.src" :alt="slide.alt" :title="slide.alt">
       </li>
     </ul>
   </div>
@@ -27,12 +38,26 @@
 interface slideGroup {
   id: number;
   src: string;
+  brokenVideoSrc: boolean;
+}
+
+interface videoEventError {
+  target: {
+    parentNode: {
+      networkState: number;
+    };
+  };
 }
 
 import { Component, Prop, Vue } from "vue-property-decorator";
 
 @Component({})
 export default class Carousel extends Vue {
+  $refs!: {
+    activeSlide: HTMLMediaElement[];
+    prevSlide1: HTMLMediaElement[];
+  };
+
   @Prop({ required: true })
   slides!: (string | { src: string })[];
 
@@ -61,7 +86,7 @@ export default class Carousel extends Vue {
     };
 
     window.onfocus = () => {
-      // this.resumeInterval();
+      this.resumeInterval();
     };
   }
 
@@ -77,6 +102,9 @@ export default class Carousel extends Vue {
 
   mounted() {
     this.intervalState = 1;
+    if (!this.truncatedSlides[0].brokenVideoSrc && this.videos) {
+      this.$refs.prevSlide1[0].play();
+    }
   }
 
   formatSlides() {
@@ -94,6 +122,8 @@ export default class Carousel extends Vue {
   }
 
   next() {
+    if (this.$refs.prevSlide1[0]) this.$refs.prevSlide1[0].pause();
+
     if (this.slides.length === 3) {
       const lastId: any = this.formattedSlides.pop();
       const last: slideGroup = Object.assign({}, this.formattedSlides[2]);
@@ -105,6 +135,10 @@ export default class Carousel extends Vue {
     }
 
     this.truncatedSlides = this.truncateSlides();
+    if (!this.truncatedSlides[1].brokenVideoSrc && this.videos) {
+      this.$refs.activeSlide[0].currentTime = 0;
+      this.$refs.activeSlide[0].play();
+    }
   }
 
   pauseInterval() {
@@ -135,17 +169,25 @@ export default class Carousel extends Vue {
 
   mapSlides(slide: string | { src: string }, idx: number) {
     if (typeof slide === "object") {
-      return Object.assign({ id: idx + 1 }, slide);
+      return Object.assign({ id: idx + 1, brokenVideoSrc: false }, slide);
     }
 
     return {
       id: idx + 1,
-      src: slide
+      src: slide,
+      brokenVideoSrc: false
     };
   }
 
   getLastSlide(slide: slideGroup, idx: number, arr: slideGroup[]): boolean {
     return idx === arr.length - 1;
+  }
+
+  handleError(e: videoEventError, slide: slideGroup) {
+    if (e.target.parentNode.networkState === 3) {
+      let slideIndex = this.formattedSlides.findIndex(el => el.id === slide.id);
+      this.formattedSlides[slideIndex].brokenVideoSrc = true;
+    }
   }
 }
 </script>
@@ -174,13 +216,16 @@ export default class Carousel extends Vue {
   }
 
   &__item {
-    width: 100%;
-    height: 100%;
     position: absolute;
     top: 0;
     transform: translateX(-50%) scale(0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
     border-radius: 8px;
-    background-color: transparent;
+    background-color: @light-2;
     background-blend-mode: lighten;
     opacity: 0.5;
     overflow: hidden;
@@ -188,28 +233,26 @@ export default class Carousel extends Vue {
       opacity 0.75s ease-in-out, filter 1.25s cubic-bezier(0.4, 0, 0.2, 1),
       left 1.25s cubic-bezier(0.4, 0, 0.2, 1);
 
-    img,
-    video {
-      position: relative;
-      display: block;
+    a {
+      display: flex;
+      justify-content: center;
+      align-items: center;
       width: 100%;
       height: 100%;
+    }
 
-      &:before {
-        content: "\e923" " " attr(alt);
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-family: "icomoon", "Roboto";
-        font-size: 16px;
-        font-weight: 500;
-        background-color: @white;
-      }
+    img,
+    video {
+      display: block;
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+    }
+
+    span {
+      font-weight: 500;
     }
 
     &:nth-child(1) {
@@ -251,6 +294,10 @@ export default class Carousel extends Vue {
   .carousel {
     &__list {
       background-color: @dark-3;
+    }
+
+    &__item {
+      background-color: @dark-2;
     }
   }
 }
