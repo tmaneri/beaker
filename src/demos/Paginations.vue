@@ -19,7 +19,7 @@
       <pagination
         :night-bg="true"
         :items-per-page="4"
-        :total-item-count="2010"
+        :total-item-count="20"
         @page-selected="consolePage"
       ></pagination>
 
