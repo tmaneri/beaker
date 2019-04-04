@@ -1,6 +1,6 @@
 {
   "name": "streamlabs-beaker",
-  "version": "0.3.61",
+  "version": "0.3.62",
   "main": "./dist/beaker.js",
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -17,7 +17,6 @@
     "*.js"
   ],
   "dependencies": {
-    "@babel/polyfill": "^7.4.3",
     "google-fonts-webpack-plugin": "^0.4.4",
     "v-tooltip": "^2.0.0-rc.33",
     "vue": "^2.6.6",
@@ -34,6 +33,7 @@
   "devDependencies": {
     "@babel/cli": "^7.4.3",
     "@babel/core": "^7.4.3",
+    "@babel/polyfill": "^7.4.3",
     "@babel/preset-env": "^7.4.3",
     "@types/node": "^10.12.2",
     "@types/vue-select": "^2.4.0",
