@@ -1,13 +1,13 @@
 {
   "name": "streamlabs-beaker",
-  "version": "0.3.60",
+  "version": "0.3.61",
   "main": "./dist/beaker.js",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "build-bundle": "babel ./src/system.js --presets @vue/babel-preset-app --out-file ./dist/beaker.js",
-    "prepare": "vue-cli-service build --target lib --name beaker ./src/system.js"
+    "prepare": "babel ./src/system.js --presets @vue/babel-preset-app --out-file ./dist/beaker.js"
   },
   "files": [
     "dist/*",
