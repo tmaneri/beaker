@@ -1,12 +1,12 @@
 {
   "name": "streamlabs-beaker",
   "version": "0.3.57",
-  "main": "./dist/beaker.common.js",
+  "main": "./dist/beaker.js",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "build-bundle": "vue-cli-service build --target lib --name beaker ./src/system.js",
+    "build-bundle": "babel ./src/system.js --presets @vue/babel-preset-app --out-file ./dist/beaker.js",
     "prepare": "vue-cli-service build --target lib --name beaker ./src/system.js"
   },
   "files": [
@@ -17,6 +17,8 @@
     "*.js"
   ],
   "dependencies": {
+    "@babel/polyfill": "^7.4.3",
+    "@vue/babel-preset-app": "^3.5.5",
     "google-fonts-webpack-plugin": "^0.4.4",
     "v-tooltip": "^2.0.0-rc.33",
     "vee-validate": "^2.1.7",
@@ -32,6 +34,9 @@
     "vuejs-paginate": "^2.1.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.4.3",
+    "@babel/core": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
     "@types/node": "^10.12.2",
     "@types/vue-select": "^2.4.0",
     "@vue/cli-plugin-babel": "^3.0.5",
