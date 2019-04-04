@@ -1,6 +1,6 @@
 {
   "name": "streamlabs-beaker",
-  "version": "0.3.59",
+  "version": "0.3.60",
   "main": "./dist/beaker.js",
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -18,10 +18,8 @@
   ],
   "dependencies": {
     "@babel/polyfill": "^7.4.3",
-    "@vue/babel-preset-app": "^3.5.5",
     "google-fonts-webpack-plugin": "^0.4.4",
     "v-tooltip": "^2.0.0-rc.33",
-    "vee-validate": "^2.1.7",
     "vue": "^2.6.6",
     "vue-class-component": "^6.0.0",
     "vue-color": "^2.7.0",
@@ -39,6 +37,7 @@
     "@babel/preset-env": "^7.4.3",
     "@types/node": "^10.12.2",
     "@types/vue-select": "^2.4.0",
+    "@vue/babel-preset-app": "^3.5.5",
     "@vue/cli-plugin-babel": "^3.0.5",
     "@vue/cli-plugin-eslint": "^3.0.5",
     "@vue/cli-plugin-typescript": "^3.0.5",
